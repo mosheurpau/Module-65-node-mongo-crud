@@ -18,12 +18,19 @@ const client = new MongoClient(uri, {
   useUnifiedTopology: true,
   serverApi: ServerApiVersion.v1,
 });
-client.connect((err) => {
-  const collection = client.db("test").collection("devices");
-  console.log("db connected");
-  // perform actions on the collection object
-  client.close();
-});
+
+async function run() {
+  try {
+    await client.connect();
+    const userCollection = client.db("foodExpress").collection("user");
+    const user = { name: "Mehedi", email: "mehedi@gmail.com" };
+    const result = await userCollection.insertOne(user);
+    console.log(`User inserted with id: ${result.insertedId}`);
+  } finally {
+    // await client.close();
+  }
+}
+run().catch(console.dir);
 
 app.get("/", (req, res) => {
   res.send("Running My Node CRUD Server");
